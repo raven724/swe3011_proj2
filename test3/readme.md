@@ -49,7 +49,10 @@ _________________________________________________________________
 dense_3 (Dense)              (None, 10)                10250     
 =================================================================
 
-FClight: delete 4096 FC layer
-lldel: delete redundant large conv layer(128, 256)
-winl: large window size(filter size up 3x3->5x5) in first layer of first two block
-nopad: disable padding in first two conv layer
+FClight: delete 4096 FC layer /
+
+lldel: delete redundant large conv layer(128, 256) /
+
+winl: large window size(filter size up 3x3->5x5) in first layer of first two block / 
+
+nopad: disable padding in first two conv layer /
