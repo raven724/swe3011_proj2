@@ -7,7 +7,7 @@ from keras.layers import Conv2D, MaxPooling2D
 import os
 
 save_dir = os.path.join(os.getcwd(), 'saved_models')
-model_name = 'test3.h5'
+model_name = 'test3_lldel_FClight.h5'
 
 (x_train, y_train), (x_test, y_test) = cifar10.load_data()
 print('x_train shape:', x_train.shape)
