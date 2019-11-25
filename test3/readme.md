@@ -1,7 +1,7 @@
 Main model
-_________________________________________________________________
-Layer (type)                 Output Shape              Param #   
 =================================================================
+Layer (type)                 Output Shape              Param #   
+_________________________________________________________________
 conv2d_1 (Conv2D)            (None, 32, 32, 32)        896       
 conv2d_2 (Conv2D)            (None, 32, 32, 32)        9248      
 max_pooling2d_1 (MaxPooling2 (None, 16, 16, 32)        0         
@@ -23,12 +23,12 @@ _________________________________________________________________
 dense_2 (Dense)              (None, 1024)              4195328   
 _________________________________________________________________
 dense_3 (Dense)              (None, 10)                10250     
-=================================================================
+_________________________________________________________________
 
-FClight: delete 4096 FC layer /
+FClight: delete 4096 FC layer 
 
-lldel: delete redundant large conv layer(128, 256) /
+lldel: delete redundant large conv layer(128, 256) 
 
-winl: large window size(filter size up 3x3->5x5) in first layer of first two block / 
+winl: large window size(filter size up 3x3->5x5) in first layer of first two block 
 
-nopad: disable padding in first two conv layer /
+nopad: disable padding in first two conv layer 
