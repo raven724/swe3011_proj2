@@ -1,14 +1,12 @@
 import keras
 import tensorflow as tf
 import keras.backend.tensorflow_backend as K
-from tensorflow.python.client import device_lib
 from keras.datasets import cifar10
 from keras.models import Sequential
 from keras.layers import Dense, Dropout, Activation, Flatten
 from keras.layers import Conv2D, MaxPooling2D
 import os
 
-print(device_lib.list_local_devices())
 save_dir = os.path.join(os.getcwd(), 'saved_models')
 model_name = 'test3.h5'
 
