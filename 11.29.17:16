@@ -1,0 +1,115 @@
+## 데이터 확인 ##
+
+## import
+from keras.datasets import cifar10
+from matplotlib import pyplot
+#from scipy.misc import toimage
+
+## CIFAR-10 데이터 불러오기
+(X_train, y_train), (X_test, y_test) = cifar10.load_data()
+
+## 이미지 확인
+#for i in range(0, 9):
+#	pyplot.subplot(330 + 1 + i)
+#	pyplot.imshow(toimage(X_train[i]))
+#pyplot.show()
+
+
+## CNN models for CIFAR-10 ##
+
+## import
+import numpy
+from keras.datasets import cifar10
+from keras.models import Sequential
+from keras.layers import Dense
+from keras.layers import Dropout
+from keras.layers import Flatten
+from keras.constraints import maxnorm
+from keras.optimizers import SGD
+from keras.layers.convolutional import Conv2D
+from keras.layers.convolutional import MaxPooling2D
+from keras.utils import np_utils
+from keras import backend as K
+#K.set_image_dim_ordering('th')
+
+## 실행할 때마다 같은 결과를 출력하기 위해 시드 설정
+seed = 7
+numpy.random.seed(seed)
+
+## CIFAR-10 데이터 불러오기
+(X_train, y_train), (X_test, y_test) = cifar10.load_data()
+
+## 데이터 정규화: 0 ~ 255 -> 0.0 ~ 1.0(케라스의 성능을 최대화 하기 위함)
+X_train = X_train.astype('float32')
+X_test = X_test.astype('float32')
+X_train = X_train / 255.0
+X_test = X_test / 255.0
+
+## 원-핫 인코딩
+y_train = np_utils.to_categorical(y_train)
+y_test = np_utils.to_categorical(y_test)
+num_classes = y_test.shape[1]
+
+
+## 모델 생성
+# 신경망 생성
+model = Sequential()
+# 입력층 설정, 3 X 3 크기의 32개의 마스크 적용
+model.add(Conv2D(32, (3, 3), input_shape=(32, 32, 3), activation='relu', padding='same'))
+# drop out 0.2: 은닉층에 배치된 노드 중 20%를 임의로 꺼줌.
+model.add(Dropout(0.2))
+# 3 X 3 크기의 32개의 마스크 적용
+model.add(Conv2D(32, (3, 3), activation='relu', padding='same'))
+# 맥스 풀링
+model.add(MaxPooling2D(pool_size=(2, 2)))
+# 3 X 3 크기의 64개의 마스크 적용
+model.add(Conv2D(64, (3, 3), activation='relu', padding='same'))
+# drop out 0.2: 은닉층에 배치된 노드 중 20%를 임의로 꺼줌.
+model.add(Dropout(0.2))
+# 3 X 3 크기의 64개의 마스크 적용
+model.add(Conv2D(64, (3, 3), activation='relu', padding='same'))
+# 맥스 풀링
+model.add(MaxPooling2D(pool_size=(2, 2)))
+# 3 X 3 크기의 128개의 마스크 적용
+model.add(Conv2D(128, (3, 3), activation='relu', padding='same'))
+# drop out 0.2: 은닉층에 배치된 노드 중 20%를 임의로 꺼줌.
+model.add(Dropout(0.2))
+# 3 X 3 크기의 128개의 마스크 적용
+model.add(Conv2D(128, (3, 3), activation='relu', padding='same'))
+# 맥스 풀링
+model.add(MaxPooling2D(pool_size=(2, 2)))
+# 2차원 배열 -> 1차원 배열
+model.add(Flatten())
+# drop out 0.2: 은닉층에 배치된 노드 중 20%를 임의로 꺼줌.
+model.add(Dropout(0.2))
+# 1024 개의 노드를 가진 층(완전연결 층)
+model.add(Dense(1024, activation='relu', kernel_constraint=maxnorm(3)))
+# drop out 0.3: 은닉층에 배치된 노드 중 30%를 임의로 꺼줌.
+model.add(Dropout(0.3))
+# 512 개의 노드를 가진 층(완전연결 층)
+model.add(Dense(512, activation='relu', kernel_constraint=maxnorm(3)))
+# drop out 0.25: 은닉층에 배치된 노드 중 25%를 임의로 꺼줌.
+model.add(Dropout(0.25))
+# 1024 개의 노드를 가진 층(완전연결 층)
+model.add(Dense(1024, activation='relu', kernel_constraint=maxnorm(3)))
+# drop out 0.3: 은닉층에 배치된 노드 중 30%를 임의로 꺼줌.
+model.add(Dropout(0.3))
+# 출력층 생성
+model.add(Dense(num_classes, activation='softmax'))
+
+
+## 모델 컴파일
+epochs = 40
+lrate = 0.01
+decay = lrate/epochs
+sgd = SGD(lr=lrate, momentum=0.9, decay=decay, nesterov=False)
+model.compile(loss='categorical_crossentropy', optimizer=sgd, metrics=['accuracy'])
+print(model.summary())
+
+
+## 모델 실행
+# batch_size=32: 한 번에 32개씩 처리
+model.fit(X_train, y_train, epochs=epochs, batch_size=32, validation_data=(X_test, y_test) )
+# 분류 정확도 계산 후 출력
+scores = model.evaluate(X_test, y_test, verbose=0)
+print("Accuracy: %.2f%%" % (scores[1]*100))
